@@ -55,7 +55,12 @@ for word in foundWord:
     if word in hamWordCount:
         condProbHam[word] = float(hamWordCount[word])/hamCount
 
-        
+#print priors of spam and ham and conditional probabilities
+print "Prior Spam: " + str(priorSpam)
+print "Cond prob of spam " + str(condProbSpam)
+print "Prior Ham " + str(priorHam) 
+print "Cond prob of Ham " + str(condProbHam)
+      
 #classify new emails
 #in this case I decided to read the original file, rather than reassembling the emails from the reducer step.
 #This increases modularity because in practice we would report our results on a validation or test set as opposed

@@ -1,3 +1,7 @@
+Prior Spam: 0.44
+Cond prob of spam {'assistance': 0.00042803638309256285, 'valium': 0.00016051364365971107}
+Prior Ham 0.56
+Cond prob of Ham {'assistance': 0.00014063708599957808}
 0001.1999-12-10.farmer	0	0
 0001.1999-12-10.kaminski	0	0
 0001.2000-01-17.beck	0	0
