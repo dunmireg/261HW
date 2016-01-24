@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+#I have placed the mapper here but have not modified it in any way from the previous mapper. It will still
+#produce ID + \t + word + \t + true spam flag to send to the reducer. 
 import sys
 import re
 WORD_RE = re.compile(r"[\w']+")

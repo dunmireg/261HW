@@ -1,45 +1,62 @@
 #!/usr/bin/python
 import sys
+import os
+from math import log
+from math import exp
 
-emails = set() #hold email IDs
-words = {} #hold words and associated counts
-spam_emails = 0 #how many emails are marked as spam
-spam_word_count = 0
-ham_word_count = 0
+priorSpam = 0
+priorHam = 0
+words = {}
+
+with open(os.path.join('./enroneEmailCondProbs', 'part-00000'), 'r') as myfile:
+    lines = myfile.readlines()
+    priorSpam = float(lines[0])
+    priorHam = float(lines[1])
+    for line in lines[2:]:
+        components = line.split('\t')
+        words[components[0]] = {'spam_like': float(components[1]), 'ham_like': float(components[2])}
+
+        
+curID = None
+spamSkip = 0
+hamSkip = 0
+spamScore = log(priorSpam)
+hamScore = log(priorHam)
+curflag = 0
 
 for line in sys.stdin:
     components = line.split('\t')
-    
     ID = components[0]
     word = components[1]
-    spam = int(components[2])
+    flag = int(components[2])
     
-    if word not in words.keys():
-        words[word] = {'spam_count': 0, 'ham_count': 0}
-    if ID not in emails:
-        emails.add(ID)
-        if spam == 1:
-            spam_emails += 1
-        
-
-    if spam == 1:
-        words[word]['spam_count'] += 1
-        spam_word_count += 1
+    if curID == ID:
+        if word in words.keys():
+            if float(words[word]['spam_like']) != 0:
+                spamScore += log(float(words[word]['spam_like']))
+            else:
+                spamScore += -300
+                spamSkip += 1
+            if float(words[word]['ham_like']) != 0:
+                hamScore += log(float(words[word]['ham_like']))
+            else:
+                hamScore += -300
+                hamSkip += 1
+#             if float(words[word]['spam_like']) != 0.0 and float(words[word]['ham_like']) != 0.0:
+#                 spamScore += log(float(words[word]['spam_like']))
+#                 hamScore += log(float(words[word]['ham_like']))
     else:
-        words[word]['ham_count'] += 1
-        ham_word_count += 1
-
-
-prior_spam = float(spam_emails)/len(emails)
-prior_ham = 1-prior_spam
-
-for i, word in words.iteritems():
-    word['spam_like'] = float(word['spam_count'])/(spam_word_count)
-    word['ham_like'] = float(word['ham_count'])/(ham_word_count)
+        if curID:
+            classification = 0
+            if spamScore > hamScore:
+                classification = 1
+            print curID + '\t' + str(flag) + '\t' + str(classification) + '\t' + str(exp(spamScore)) + '\t' + str(exp(hamScore))
+        curID = ID
+        curflag = flag
+        spamScore = log(priorSpam)
+        hamScore = log(priorHam)
     
-print spam_word_count
-print ham_word_count
-# print prior_spam
-# print prior_ham
-# for word in words.keys():
-#     print word + ', Spam: ' + str(words[word]['spam_like']) + ' Ham: ' + str(words[word]['ham_like'])
+if ID == curID:
+    print curID + '\t' + str(flag) + '\t' + str(classification) + '\t' + str(exp(spamScore)) + '\t' + str(exp(hamScore))
+    print spamSkip
+    print hamSkip
