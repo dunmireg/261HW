@@ -1,39 +1,45 @@
 #!/usr/bin/python
-#Credit to Professor Shanahan's example code for inspiration for this reducer
-from operator import itemgetter
 import sys
 
-current_word = None
-current_count = 0
-word = None
+emails = set() #hold email IDs
+words = {} #hold words and associated counts
+spam_emails = 0 #how many emails are marked as spam
+spam_word_count = 0
+ham_word_count = 0
 
-# input comes from STDIN
 for line in sys.stdin:
-    # remove leading and trailing whitespace
-    line = line.strip()
+    components = line.split('\t')
+    
+    ID = components[0]
+    word = components[1]
+    spam = int(components[2])
+    
+    if word not in words.keys():
+        words[word] = {'spam_count': 0, 'ham_count': 0}
+    if ID not in emails:
+        emails.add(ID)
+        if spam == 1:
+            spam_emails += 1
+        
 
-    # parse the input we got from mapper.py
-    word, count = line.split('\t', 1)
-
-    # convert count (currently a string) to int
-    try:
-        count = int(count)
-    except ValueError:
-        # count was not a number, so silently
-        # ignore/discard this line
-        continue
-
-    # this IF-switch only works because Hadoop sorts map output
-    # by key (here: word) before it is passed to the reducer
-    if current_word == word:
-        current_count += count
+    if spam == 1:
+        words[word]['spam_count'] += 1
+        spam_word_count += 1
     else:
-        if current_word:
-            # write result to STDOUT
-            print '%s\t%s' % (current_word, current_count)
-        current_count = count
-        current_word = word
+        words[word]['ham_count'] += 1
+        ham_word_count += 1
 
-# do not forget to output the last word if needed!
-if current_word == word:
-    print '%s\t%s' % (current_word, current_count)
+
+prior_spam = float(spam_emails)/len(emails)
+prior_ham = 1-prior_spam
+
+for i, word in words.iteritems():
+    word['spam_like'] = float(word['spam_count'])/(spam_word_count)
+    word['ham_like'] = float(word['ham_count'])/(ham_word_count)
+    
+print spam_word_count
+print ham_word_count
+# print prior_spam
+# print prior_ham
+# for word in words.keys():
+#     print word + ', Spam: ' + str(words[word]['spam_like']) + ' Ham: ' + str(words[word]['ham_like'])
