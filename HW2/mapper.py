@@ -12,7 +12,7 @@ priorSpam = 0
 priorHam = 0
 words = {}
 
-with open(os.path.join('./enroneEmailCondProbs', 'part-00000'), 'r') as myfile:
+with open(os.path.join('./enroneEmailCondProbLaplace', 'part-00000'), 'r') as myfile:
     lines = myfile.readlines()
     priorSpam = float(lines[0])
     priorHam = float(lines[1])
@@ -49,5 +49,3 @@ for line in sys.stdin:
     if spamScore > hamScore:
         pred = 1
     print components[0] + '\t' + components[1] + '\t' + str(pred) + '\t' + str(exp(spamScore)) + '\t' + str(exp(hamScore))
-print spamSkip
-print hamSkip
