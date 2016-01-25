@@ -9,3 +9,4 @@ for line in sys.stdin:
             misclassified += 1
     print line
 print "Misclassified: " + str(misclassified) + " which means this has an accuracy of " + str(100-misclassified) + "%"
+    
