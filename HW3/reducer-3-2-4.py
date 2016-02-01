@@ -1,10 +1,12 @@
 #!/usr/bin/python
 import sys
+import operator
 
 current_word = None
 current_count = None
 word = None
 total = 0
+wordcount = {}
 
 for line in sys.stdin:
     line = line.split('\t')
@@ -18,10 +20,24 @@ for line in sys.stdin:
         else:
             if current_word:
                 #sys.stderr.write('reporter:counter:Reduce-Counter,Total,1\n')
-                print '%s\t%s\t%s' % (current_word, current_count, float(current_count)/total)
+                wordcount[current_word] = current_count
             current_word = word
             current_count = count
 
 if current_word == word:
     #sys.stderr.write('reporter:counter:Reduce-Counter,Total,1\n')
-    print '%s\t%s\t%s' % (current_word, current_count, float(current_count)/total)
+    wordcount[current_word] = current_count
+    
+largest = 50
+smallest = 10
+sortedWordCount = sorted(wordcount.items(), key = operator.itemgetter(1))
+
+print "The Top 50 terms are"
+for i in range(largest):
+    print str(sortedWordCount[-i-1][0]) + '\t' + str(sortedWordCount[-i-1][1]) + '\t' + str(float(sortedWordCount[-i-1][1])/total)
+    
+print '\n'
+
+print "The bottom 10 terms are"
+for i in range(smallest):
+    print str(sortedWordCount[i][0]) + '\t' + str(sortedWordCount[i][1]) + '\t' + str(float(sortedWordCount[i][1])/total)
