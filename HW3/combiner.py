@@ -4,7 +4,7 @@ import sys
 current_word = None
 current_count = None
 word = None
-sys.stderr.write('reporter:counter:Reduce-Counter,Total,1\n')
+sys.stderr.write('reporter:counter:Combiner-Counter,Total,1\n')
 for line in sys.stdin:
     #issue, count = line.split('\t')
     line = line.split('\t')

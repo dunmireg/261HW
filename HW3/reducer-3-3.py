@@ -40,16 +40,16 @@ if current_item == item:
 largest = 50
 smallest = 10
 #sorted_x = sorted(x.items(), key=operator.itemgetter(1))
-sortedWordCount = sorted(wordcount.items(), key = operator.itemgetter(1))
+sortedWordCount = sorted(wordcount.items(), key = lambda x: (-x[1], x[0]))
 
 print "The Top 50 items are:"
 for i in range(largest):
-    print sortedWordCount[-i-1][0] + '\t' + str(sortedWordCount[-i-1][1]) + '\t' + str(float(sortedWordCount[-i-1][1])/total)
+    print sortedWordCount[i][0] + '\t' + str(sortedWordCount[i][1]) + '\t' + str(float(sortedWordCount[i][1])/total)
 
 print '\n'
 print "The 10 smalleset items are"
 for i in range(smallest):
-    print sortedWordCount[i][0] + '\t' + str(sortedWordCount[i][1]) + '\t' + str(float(sortedWordCount[i][1])/total)
+    print sortedWordCount[-i-1][0] + '\t' + str(sortedWordCount[-i-1][1]) + '\t' + str(float(sortedWordCount[-i-1][1])/total)
 
 print '\n'
 print "Number of unique items from this supplier: " + str(len(unique_items))
