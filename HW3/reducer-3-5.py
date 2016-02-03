@@ -3,7 +3,7 @@ import sys
 import ast
 from collections import Counter, OrderedDict
 
-support = 3
+support = 100
 totalBaskets = 0
 current_item = None
 current_item_dict = Counter({})
